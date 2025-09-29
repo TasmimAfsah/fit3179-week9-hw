@@ -18,53 +18,41 @@
       "width": 900,
       "height": 500,
       "projection": {"type": "equalEarth"},
-      "layer": [
+      "data": {
+        "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
+        "format": {"type": "topojson", "feature": "countries"}
+      },
+      "transform": [
         {
-          "data": {
-            "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
-            "format": {"type": "topojson", "feature": "countries"}
-          },
-          "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
-        },
-        {
-          "data": {
-            "url": "monthly-average-surface-temperatures-by-year.csv",
-            "format": {"type": "csv"}
-          },
-          "transform": [
-            {"filter": "datum.Year >= 1 && datum.Year <= 12"}, 
-            {
-              "aggregate": [{"op": "mean", "field": "2020", "as": "avg_temp_2020"}],
-              "groupby": ["Entity", "Code"]
+          "lookup": "properties.ISO_A3",
+          "from": {
+            "data": {
+              "url": "monthly-average-surface-temperatures-by-year.csv",
+              "format": {"type": "csv"}
             },
-            {
-              "lookup": "Code",
-              "from": {
-                "data": {
-                  "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
-                  "format": {"type": "topojson", "feature": "countries"}
-                },
-                "key": "properties.ISO_A3"
-              },
-              "as": "geo"
-            }
-          ],
-          "mark": {"type": "geoshape"},
-          "encoding": {
-            "shape": {"field": "geo", "type": "geojson"},
-            "color": {
-              "field": "avg_temp_2020",
-              "type": "quantitative",
-              "scale": {"scheme": "reds"},
-              "title": "°C (avg)"
-            },
-            "tooltip": [
-              {"field": "Entity", "type": "nominal", "title": "Country"},
-              {"field": "avg_temp_2020", "type": "quantitative", "title": "Avg Temp (2020, °C)"}
-            ]
+            "key": "Code",
+            "fields": ["Entity", "Code", "Year", "2020"]
           }
+        },
+        {"filter": "datum.Year >= 1 && datum.Year <= 12"},
+        {
+          "aggregate": [{"op": "mean", "field": "2020", "as": "avg_temp_2020"}],
+          "groupby": ["Entity","Code","properties.ISO_A3"]
         }
-      ]
+      ],
+      "mark": {"type": "geoshape"},
+      "encoding": {
+        "color": {
+          "field": "avg_temp_2020",
+          "type": "quantitative",
+          "scale": {"scheme": "reds"},
+          "title": "°C (avg)"
+        },
+        "tooltip": [
+          {"field": "Entity", "title": "Country"},
+          {"field": "avg_temp_2020", "title": "Avg Temp (2020, °C)"}
+        ]
+      }
     };
 
     vegaEmbed('#vis', spec);
