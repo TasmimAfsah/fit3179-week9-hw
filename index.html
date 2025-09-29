@@ -18,17 +18,6 @@
       "width": 900,
       "height": 500,
       "projection": {"type": "equalEarth"},
-      "data": {
-        "url": "monthly-average-surface-temperatures-by-year.csv",
-        "format": {"type": "csv"}
-      },
-      "transform": [
-        {"filter": "datum.Year >= 1 && datum.Year <= 12"},   // only months
-        {
-          "aggregate": [{"op": "mean", "field": "2020", "as": "avg_temp_2020"}],
-          "groupby": ["Entity", "Code"]
-        }
-      ],
       "layer": [
         {
           "data": {
@@ -38,25 +27,31 @@
           "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
         },
         {
-          "mark": {"type": "geoshape"},
           "data": {
-            "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
-            "format": {"type": "topojson", "feature": "countries"}
+            "url": "monthly-average-surface-temperatures-by-year.csv",
+            "format": {"type": "csv"}
           },
           "transform": [
+            {"filter": "datum.Year >= 1 && datum.Year <= 12"}, 
             {
-              "lookup": "id",
+              "aggregate": [{"op": "mean", "field": "2020", "as": "avg_temp_2020"}],
+              "groupby": ["Entity", "Code"]
+            },
+            {
+              "lookup": "Code",
               "from": {
                 "data": {
-                  "url": "monthly-average-surface-temperatures-by-year.csv",
-                  "format": {"type": "csv"}
+                  "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
+                  "format": {"type": "topojson", "feature": "countries"}
                 },
-                "key": "Code",
-                "fields": ["avg_temp_2020","Entity"]
-              }
+                "key": "properties.ISO_A3"
+              },
+              "as": "geo"
             }
           ],
+          "mark": {"type": "geoshape"},
           "encoding": {
+            "shape": {"field": "geo", "type": "geojson"},
             "color": {
               "field": "avg_temp_2020",
               "type": "quantitative",
