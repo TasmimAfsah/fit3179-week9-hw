@@ -17,39 +17,27 @@
       "width": 900,
       "height": 500,
       "projection": {"type": "equalEarth"},
-      "data": {
-        "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
-        "format": {"type": "topojson", "feature": "countries"}
-      },
-      "transform": [
+      "layer": [
         {
-          "lookup": "properties.ISO_A3",
-          "from": {
-            "data": {
-              "url": "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO/main/temps_2020_clean.csv",
-              "format": {"type": "csv"}
-            },
-            "key": "Code",
-            "fields": ["Entity", "AvgTemp"]
-          }
-        }
-      ],
-      "mark": {"type": "geoshape"},
-      "encoding": {
-        "color": {
-          "field": "AvgTemp",
-          "type": "quantitative",
-          "scale": {"scheme": "reds"},
-          "title": "Avg Temp (°C)"
+          "data": {
+            "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
+            "format": {"type": "topojson", "feature": "countries"}
+          },
+          "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
         },
-        "tooltip": [
-          {"field": "Entity", "title": "Country"},
-          {"field": "AvgTemp", "title": "Avg Temp (2020, °C)"}
-        ]
-      }
-    };
-
-    vegaEmbed('#vis', spec);
-  </script>
-</body>
-</html>
+        {
+          "data": {
+            "url": "https://raw.githubusercontent.com/TasmimAfsah/fit3179-week9-hw/refs/heads/main/temps_2020_clean.csv",
+            "format": {"type": "csv"}
+          },
+          "transform": [
+            {
+              "lookup": "Code",
+              "from": {
+                "data": {
+                  "url": "https://raw.githubusercontent.com/vega/vega-datasets/master/data/world-110m.json",
+                  "format": {"type": "topojson", "feature": "countries"}
+                },
+                "key": "properties.ISO_A3"
+              },
+              "a
