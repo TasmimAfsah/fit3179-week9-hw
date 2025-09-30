@@ -27,7 +27,7 @@
         },
         {
           "data": {
-            "url": "https://raw.githubusercontent.com/TasmimAfsah/fit3179-week9-hw/refs/heads/main/temps_2020_clean.csv",
+            "url": "https://raw.githubusercontent.com/TasmimAfsah/fit3179-week9-hw/main/temps_2020_clean.csv",
             "format": {"type": "csv"}
           },
           "transform": [
@@ -40,4 +40,28 @@
                 },
                 "key": "properties.ISO_A3"
               },
-              "a
+              "as": "geo"
+            }
+          ],
+          "mark": {"type": "geoshape"},
+          "encoding": {
+            "shape": {"field": "geo", "type": "geojson"},
+            "color": {
+              "field": "AvgTemp",
+              "type": "quantitative",
+              "scale": {"scheme": "reds"},
+              "title": "°C"
+            },
+            "tooltip": [
+              {"field": "Entity", "title": "Country"},
+              {"field": "AvgTemp", "title": "Avg Temp (2020 °C)"}
+            ]
+          }
+        }
+      ]
+    };
+
+    vegaEmbed('#vis', spec);
+  </script>
+</body>
+</html>
